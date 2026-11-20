@@ -36,6 +36,7 @@ h1{margin:0 0 4px;font-size:22px}
 .seg button{display:flex;align-items:center;justify-content:center;gap:6px}
 .seg .ci{width:20px;height:20px;opacity:.75}
 .seg button.on .ci{opacity:1;filter:brightness(0) invert(.08)}
+@media (max-width:600px){.seg button{flex-direction:column;gap:2px;min-width:0;white-space:normal;line-height:1.2;font-size:12px;padding:6px 2px}.subs{grid-template-columns:repeat(3,minmax(0,1fr))}.subs button{flex-direction:column;gap:2px;min-width:0;padding:6px 4px}.subs .ci{width:24px;height:24px}.subs button span{text-align:center}}
 .subs button{display:flex;align-items:center;justify-content:center;gap:8px}
 .subs .ci{width:28px;height:28px;flex:none}
 .subs button span{text-align:left}
