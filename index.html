@@ -83,6 +83,8 @@ main{max-width:1100px;margin:auto;padding:12px 16px 40px}
 .sic{width:26px;height:26px;border-radius:6px;vertical-align:middle;margin:3px 6px 3px 0;background:var(--line)}
 .svb{display:inline-block;margin-right:5px;padding:0 6px;border-radius:4px;border:1px solid #4a7f6c;font-size:10px;font-weight:700;color:#8fd3b8;vertical-align:1px}
 .svb.k{border-color:#c77a3a;color:#ffb070}
+.ssn{display:inline-block;margin-right:5px;padding:0 6px;border-radius:4px;border:1px solid #5b6cc9;font-size:10px;font-weight:700;color:#aab6ff;vertical-align:1px}
+.ssn.s2{border-color:#c9a23a;color:#ffd96b;background:rgba(201,162,58,.12)}
 .empty{color:var(--mute);text-align:center;padding:40px}
 details.gl{background:var(--field);border:1px solid var(--line);border-radius:12px;padding:8px 14px}
 details.gl summary{cursor:pointer;font-weight:600;font-size:14px}
@@ -464,7 +466,14 @@ const GLOSS = [
   ['Class Assist','ระบบช่วยต่อสู้อัตโนมัติที่ใช้สกิลตามกลไกของอาชีพ ปลดล็อกที่เลเวลอาชีพ 30 (ยังไม่ยืนยัน)'],
   ['ชาร์จ','กดค้างเพื่อเพิ่มพลังสกิล'],
   ['ความเร็วร่าย','ความเร็วในการร่ายสกิลที่ต้องร่าย'],
+  ['ซีซั่น 1 / ซีซั่น 2 (ป้ายหลังชื่อรูน)','ซีซั่นของเซิร์ฟเกาหลีที่รูนนั้นเริ่มมีให้ใช้ (ซีซั่น 1 เริ่ม 25 ก.ย. 2025 · ซีซั่น 2 เริ่ม 25 มิ.ย. 2026) · เซิร์ฟญี่ปุ่นยังไม่ระบุซีซั่นของรูน แต่รูนที่มีฝั่ง JP ทั้งหมดอยู่ในชุดซีซั่น 1 · "ซีซั่น 1?" = ไม่พบในประกาศซีซั่น 2 จึงน่าจะเป็นของซีซั่น 1 แต่ยังไม่พบหลักฐานวันเพิ่มรูน'],
 ];
+// ซีซั่นที่รูนเครื่องประดับเริ่มมีใช้ (เซิร์ฟเกาหลี) — ตรวจ 22 พ.ย. 2026
+// ซีซั่น 2 = รูนใหม่ 1 ตัวต่ออาชีพที่ Nexon ประกาศล่วงหน้า 27 พ.ค.–19 มิ.ย. 2026 (ใช้ได้ตั้งแต่อัปเดต 25 มิ.ย. 2026) — ทั้งหมดไม่มีใน JP
+// ซีซั่น 1 = ที่เหลือ (ชุด ★8 ตำนานที่เพิ่ม 25 ก.ย. 2025 + รูนที่เพิ่มช่วงซีซั่น 1) · SEASON_Q = ยังไม่มีหลักฐานวันเพิ่ม (ไม่อยู่ในประกาศซีซั่น 2 → อนุมานว่าซีซั่น 1)
+const SEASON2 = new Set(['กลาดิเอเตอร์+','ไร้ปรานี+','ดาบหนัก+','เกลียว+','ทิ่มทะลุ+','ขานรับ+','หอกน้ำแข็ง+','ระดมยิง+','ทุ่งหิมะ+','คุ้มครอง+','ลงทัณฑ์+','ตะเกียง+','บรรเลงรวม+','โห่ร้อง+','วัฏจักร+','กับดัก+','ทะยานฟ้า+','ไขว้+']);
+const SEASON_Q = new Set(['ฟ้าคำราม+','จุดไฟ+','คริสตัล+']);
+const seasonBadge = n => SEASON2.has(n) ? '<span class="ssn s2">ซีซั่น 2</span>' : SEASON_Q.has(n) ? '<span class="ssn" title="ไม่พบในประกาศซีซั่น 2 จึงน่าจะเป็นของซีซั่น 1 แต่ยังไม่พบหลักฐานวันเพิ่มรูน">ซีซั่น 1?</span>' : '<span class="ssn">ซีซั่น 1</span>';
 // ลำดับสายและอาชีพตามหน้า Classes ของเว็บทางการ
 const LINES = [
   ['Warrior',['warrior','greatsword','swordsman']],
@@ -651,12 +660,42 @@ const RUNES = {
   s157:[['ลุยต่อ+','(ใช้กับ ลมหอน และ <em>พายุหอน</em>) ระหว่างใช้ Cooldown ของสกิลแอคทีฟอื่น (ยกเว้นท่าไม้ตาย) ฟื้นเร็วขึ้น','','JK'],['เสริมแรง+','ตอนใช้สกิลเสริมพลัง ดาเมจเพิ่ม','','JK']],
   s158:[['วิ่งสุดฝีเท้า+','(ใช้กับ พุ่งโทสะ และ <em>โทสะสายฟ้า</em>) ตอนใช้<em>โทสะสายฟ้า</em> จะรีเซ็ต Cooldown ของพุ่งโทสะ และมีโอกาสได้<b>ลมพายุ</b>เพิ่ม','','JK'],['ไขว้+','(ใช้กับ พุ่งโทสะ และ <em>โทสะสายฟ้า</em>) ตีโดนด้วยสกิลครบจำนวนหนึ่งแล้ว ใช้ท่า<em>ครอสสไตรค์</em>ได้','','K']]
 };
+// รูนที่ผลเปลี่ยนไปจากเดิม (เปรียบเทียบข้อความ Inven ซีซั่น 1 กับ rune-db ของ erinndata ซีซั่น 2, 22 พ.ย. 2026) — ข้อความ "เดิม" Claude แปลเองจาก Inven
+// RUNE_OLD[ชื่อรูน] = [ผลเดิม, 1 = บันทึกแพตช์ซีซั่น 2 (24 มิ.ย. 2026) ยืนยัน / 0 = รู้แค่ว่าต่างจากฉบับ Inven ไม่รู้ว่าเปลี่ยนตอนไหน]
+// RUNE_NEW = ผลใหม่ที่ใช้แทนข้อความใน RUNES (กรณีข้อความที่ได้จาก JP ยังเป็นของเก่า)
+const RUNE_OLD = {
+  'ปราณกล้า+':['ดาเมจของ<em>คำรามกลางสนามรบ</em>เพิ่มมาก แลกกับ<b>ใจสู้</b>ที่ไม่เพิ่ม',1],
+  'ดินปืน+':['ศัตรูที่โดน (สูงสุด 5 ตัว) ติด Debuff <u>ผงฝุ่น</u> ถ้าถูกโจมตีธาตุไฟจะระเบิดเป็นดาเมจวงกว้างรอบๆ',1],
+  'หมุนวน+':['จำนวนรอบหมุนลดลงมาก ฟันได้เร็ว ใช้เวลาและ Cooldown ลดลงมาก',1],
+  'พุ่งทะยาน+':['พุ่งไปข้างหน้าระยะสั้น (ยังไม่มีดาเมจ 2 เท่าตอนเป้าหมายกำลังร่ายสกิล)',1],
+  'พร+':['ผลโจมตีเพิ่มเติมเปลี่ยนเป็นดาเมจวงกว้างและทำงาน 100% แต่รอบการทำงานยาวขึ้น (ยังไม่มีผลเพิ่มดาเมจให้ตัวเองและเป้าหมายที่เชื่อม)',1],
+  'วิหาร+':['ในเขตศักดิ์สิทธิ์ พลังของสกิลทั้งหมดของ Priest เพิ่มขึ้น',0],
+  'ลมร้อน+':['พายุวนอยู่นานขึ้นและดาเมจเพิ่มมาก (ยังไม่สร้าง<b>ความร้อน</b>)',1],
+  'กรรม+':['ยิ่งมี<b>มนตรา</b>มาก จำนวนครั้งของคอมโบยิ่งเพิ่ม',1],
+  'จู่โจม+':['ถ้าใช้ต่อเนื่องหลังการบรรเลง จะยิงเร็วขึ้น',1],
+  'เจ้าเล่ห์+':['ถ้า HP เป้าหมายสูงกว่าค่าหนึ่งจะได้ดาเมจเพิ่ม',1],
+  'ชีพจร+':['เวลาตั้งสมาธิและรอบการโจมตีลดลง',1],
+  'อดทน+':['ฉมวกสนับสนุนโจมตี 3 ครั้ง ดาเมจเพิ่ม แต่ Cooldown ของสกิลเพิ่มขึ้นด้วย',0],
+  'ผีเสื้อ+':['เกิดผีเสื้อ 3 ตัวไล่ศัตรู',0],
+  'สดชื่น+':['ดาเมจโจมตีระยะไกลแบบเสริมแรงเพิ่มตามจำนวนครั้ง และความเร็วโจมตีเพิ่ม',0],
+  'ลืมตน+':['เมื่อ<b>แรงบันดาลใจดนตรี</b>เกิดขึ้น มีโอกาสต่ำได้<b>แรงบันดาลใจสูงสุด</b> ซึ่งทำให้บรรเลงระบำในตำนานได้ 1 ครั้ง',0],
+  'นางแอ่น+':['ไม่ต้องชาร์จแล้ว ใช้ได้เร็ว ยิงโดนติด<s>บาดแผล</s>',0],
+  'ล่มสลาย+':['พื้นที่โจมตีของ<em>ฟาดดาบ</em>แคบลงแต่แรงขึ้นมาก ถ้าใช้กับศัตรูที่ HP ต่ำกว่าค่าหนึ่งจะได้ Buff <em>ครอบงำ</em> (พลังโจมตีเพิ่มชั่วครู่) · ตอน<b>ใจสู้</b>เต็มดาเมจเพิ่ม และยิ่งเป้าหมาย HP ต่ำยิ่งได้<b>ใจสู้</b>มาก',0],
+  'คำราม+':['ตอน<b>ใจสู้</b>เต็ม จะปล่อยคลื่นกระแทกกวาดศัตรูรอบตัว',1],
+  'ฟันสับ+':['โจมตีศัตรูรอบตัวอย่างรวดเร็วและเพิ่ม<s>เผาไหม้</s>',1],
+  'เย้ยหยัน+':['เมื่อทำ<u>Break</u>ศัตรูได้ จะใช้พิธีฉลองชัยได้ 1 ครั้ง',0]
+};
+const RUNE_NEW = {
+  'คำราม+':'ตอน<b>ใจสู้</b>เต็ม ผลเพิ่มดาเมจที่ให้พวกพ้องแรงขึ้น และปล่อยคลื่นกระแทกกวาดศัตรูรอบตัว',
+  'ฟันสับ+':'โจมตีศัตรูรอบตัวอย่างรวดเร็วและเพิ่ม<s>เผาไหม้</s> ดาเมจเพิ่มตามจำนวนศัตรูที่โดน',
+  'เย้ยหยัน+':'ตอนใช้สกิลนี้ จะใช้พิธีฉลองชัยได้ 1 ครั้ง'
+};
 function runeBlock(id){
   const r = RUNES[id];
   // ถ้ามีค่าที่ 3 = ผลของเซิร์ฟเกาหลีที่ต่างจากญี่ปุ่น → แสดงแยกป้าย JP / KR
   // รูนที่อยู่ในส่วนรูนยอดนิยม (POP) และมีคนใช้ ≥ HOT% → พื้นหลังสีรุ้งเหมือนกัน
   const pc = n => { for(const c in POP) for(const p of POP[c].parts) for(const x of p[2]) if(x[0]===n) return x[2]; return 0; };
-  return r ? `<div class="runes">${r.map(([n,e,kr,sv])=>{ const v=pc(n), h=v>=HOT; return `<p class="ds${h?' rhot':''}"><span class="rnm">รูน ${n}</span>${sv==='JK'?'<span class="svb">JP · KR</span>':sv==='K'?'<span class="svb k">KR เท่านั้น</span>':''}${h?`<span class="sv">ใช้ ${v.toFixed(1)}%</span>`:''}${kr?`<span class="sv">JP</span>${e}<br><span class="sv">KR</span>${kr}`:e}</p>`; }).join('')}</div>` : '';
+  return r ? `<div class="runes">${r.map(([n,e0,kr,sv])=>{ const e=RUNE_NEW[n]||e0, od=RUNE_OLD[n]; const v=pc(n), h=v>=HOT; return `<p class="ds${h?' rhot':''}"><span class="rnm">รูน ${n}</span>${seasonBadge(n)}${sv==='JK'?'<span class="svb">JP · KR</span>':sv==='K'?'<span class="svb k">KR เท่านั้น</span>':''}${h?`<span class="sv">ใช้ ${v.toFixed(1)}%</span>`:''}${kr?`<span class="sv">JP</span>${e}<br><span class="sv">KR</span>${kr}`:od?`<span class="sv">${od[1]?'เดิม · ซีซั่น 1':'เดิม'}</span>${od[0]}<br><span class="sv">${od[1]?'ใหม่ · ซีซั่น 2':'ปัจจุบัน'}</span>${e}`:e}</p>`; }).join('')}</div>` : '';
 }
 // รูนยอดนิยมต่ออาชีพ (แสดงท้ายหน้า) — ที่มา erinndata.pages.dev (เซิร์ฟเกาหลี ซีซั่น 2)
 // parts: [ชื่อส่วน, คำอธิบายสั้น, [[ชื่อไทย, ชื่อ KR, % การใช้, ผล, ป้าย], ...], หมายเหตุ]  ป้าย: 'M' = Mythic (신화), 'KR' = ไม่อยู่ในรายการรูน JP ของ GameWith
@@ -1567,10 +1606,10 @@ const HOT = 70; // อัตราการใช้ตั้งแต่กี�
 function popBlock(c){
   const m = POP[c]; if(!m) return '';
   const flag = f => f==='M' ? '<span class="mf m">Mythic</span>' : f==='KR' ? '<span class="mf">ยังไม่พบใน JP</span>' : '';
-  const row = ([th,kr,r,e,f]) => `<div class="mr${r>=HOT?' hot':''}"><div class="mh"><span class="mn">${th}</span>${flag(f)}<small>${kr}</small><span class="pc">${r.toFixed(1)}%</span></div><div class="rb"><i style="width:${r}%"></i></div><p class="ds">${e}</p></div>`;
-  const parts = m.parts.map(([n,sub,rs,note]) => `<section class="ppart"><h3>${n}<span class="slot">${sub}</span></h3>${rs.map(row).join('')}${note?`<p class="pnote">${note}</p>`:''}</section>`).join('');
+  const row = acc => ([th,kr,r,e,f]) => `<div class="mr${r>=HOT?' hot':''}"><div class="mh"><span class="mn">${th}</span>${acc?seasonBadge(th):'<span class="ssn s2">ซีซั่น 2</span>'}${flag(f)}<small>${kr}</small><span class="pc">${r.toFixed(1)}%</span></div><div class="rb"><i style="width:${r}%"></i></div><p class="ds">${e}</p></div>`;
+  const parts = m.parts.map(([n,sub,rs,note]) => `<section class="ppart"><h3>${n}<span class="slot">${sub}</span></h3>${rs.map(row(n==='เครื่องประดับ')).join('')}${note?`<p class="pnote">${note}</p>`:''}</section>`).join('');
   const builds = m.builds.map(([n,kr,rows,note]) => `<section class="pb"><h3>${n}<small>${kr}</small></h3><dl>${rows.map(([a,b])=>`<dt>${a}</dt><dd>${b}</dd>`).join('')}</dl><p class="pnote ds">${note}</p></section>`).join('');
-  return `<section class="pop"><div><h2>รูนยอดนิยมของ ${C[c].th}</h2><p class="src">ข้อมูลจาก <a href="https://erinndata.pages.dev/" target="_blank" rel="noopener">erinndata.pages.dev</a> (เซิร์ฟเกาหลี ซีซั่น 2) · ${m.date} · Global อาจยังไม่มีบางรูน/คอนเทนต์ · ชื่อไทยของรูนอาวุธ เกราะ และ Emblem แปลเองจากเกาหลี ยังไม่ใช่ชื่อทางการ · กรอบสีรุ้ง = มีคนใช้ตั้งแต่ ${HOT}% ขึ้นไป</p></div>
+  return `<section class="pop"><div><h2>รูนยอดนิยมของ ${C[c].th}</h2><p class="src">ข้อมูลจาก <a href="https://erinndata.pages.dev/" target="_blank" rel="noopener">erinndata.pages.dev</a> (เซิร์ฟเกาหลี ซีซั่น 2) · ${m.date} · Global อาจยังไม่มีบางรูน/คอนเทนต์ · ชื่อไทยของรูนอาวุธ เกราะ และ Emblem แปลเองจากเกาหลี ยังไม่ใช่ชื่อทางการ · กรอบสีรุ้ง = มีคนใช้ตั้งแต่ ${HOT}% ขึ้นไป · ป้ายซีซั่น = ซีซั่นของเซิร์ฟเกาหลีที่รูนเริ่มมีใช้ (รูนอาวุธ เกราะ และ Emblem ทุกตัวเป็นชุดใหม่ของซีซั่น 2)</p></div>
     <p class="core">${m.core}</p>
     <div class="pgrid">${parts}</div>
     <h3>ชุดที่ผู้เล่นใช้ตามคอนเทนต์</h3><div class="pgrid">${builds}</div>
